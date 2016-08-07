@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Allmänt",
  Downloads			: "Nedladdningar",
  Connection			: "Anslutning",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Logg",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Laddar...",
  Torrent_file			: "Torrent-fil",
  Torrent_URL			: "Torrent-address",
@@ -261,7 +260,7 @@ var theUILang =
  About_program			: "Om ruTorrent",
  Toggle_menu			: "Visa/dölj meny",
  Toggle_details 		: "Visa/dölj detaljer",
- Toggle_categories		: "Visa/dölj ketegorier",
+ Toggle_categories		: "Visa/dölj kategorier",
  Delete_current_torrents	: "Ta bort aktuell(a) torrent(er)",
  Select_all			: "Markera alla",
  Deselect_all			: "Avmarkera alla",
