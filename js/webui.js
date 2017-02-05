@@ -28,7 +28,8 @@ var theWebUI =
 				{ text: theUILang.Seeds, 		width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER },
 				{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
-				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER }
+				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER },
+				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING }
 			],
 			container:	"List",
 			format:		theFormatter.torrents,
@@ -1402,7 +1403,12 @@ var theWebUI =
 		}
    	},
 
-	isTorrentCommandEnabled: function(act,hash) 
+	/**
+	 * @param {string} act
+	 * @param {string} hash
+	 * @returns {boolean}
+	 */
+	isTorrentCommandEnabled: function(act,hash)
 	{
 		var ret = true;
    		var status = this.torrents[hash].state;
@@ -1532,14 +1538,38 @@ var theWebUI =
 	{
 	},
 
-	addTorrents: function(data) 
+	/**
+	 * @typedef {Object} WebUITorrent
+	 * @property {string} name
+	 * @property {string} label
+	 * @property {number} dl
+	 * @property {number} ul
+	 * @property {StatusIcon} status
+	 * @property {StatusMask} state
+	 * @property {number} done - number between 0..1000
+	 * @property {number} size
+	 * @property {boolean} _updated
+	 */
+
+	/**
+	 * @param {Object} data
+	 * @param {Array.<WebUITorrent>} data.torrents
+	 * @param {Object.<string, number>} data.labels
+	 * @param {Object.<string, number>} data.labels_size
+	 */
+	addTorrents: function(data)
 	{
 		theWebUI.systemInfo.rTorrent.started = true;
    		var table = this.getTable("trt");
    		var tul = 0;
 		var tdl = 0;
 		var tArray = [];
-		$.each(data.torrents,function(hash,torrent)
+		$.each(data.torrents,
+		/**
+		 * @param {string} hash - torrent hash
+		 * @param {WebUITorrent} torrent
+		 */
+		function(hash,torrent)
 		{
 			tdl += iv(torrent.dl);
 			tul += iv(torrent.ul);
@@ -1660,7 +1690,17 @@ var theWebUI =
 	        $.extend(this.total,d);
 	},
 
-	getStatusIcon: function(torrent) 
+	/**
+	 * @typedef {array.<string>} StatusIcon
+	 * first element: icon name
+	 * second element: localized status
+	 */
+
+	/**
+	 * @param {WebUITorrent} torrent
+	 * @returns {StatusIcon}
+	 */
+	getStatusIcon: function(torrent)
 	{
 		var state = torrent.state;
 		var completed = torrent.done;
@@ -1767,6 +1807,9 @@ var theWebUI =
 		}
 	},
 
+	/**
+	 * @param {WebUITorrent} torrent
+	 */
 	updateTegs: function(torrent)
 	{
 	        var str = torrent.name.toLowerCase();
@@ -1832,7 +1875,12 @@ var theWebUI =
 		return(false);
 	},
 
-	loadLabels: function(c, s) 
+	/**
+	 *
+	 * @param {Object.<string, number>} c - <label_name, count>
+	 * @param {Object.<string, number>} s - labels size
+	 */
+	loadLabels: function(c, s)
 	{
 		var p = $("#lbll");
 		var temp = new Array();
@@ -1876,6 +1924,11 @@ var theWebUI =
 		}
    	},
 
+	/**
+	 *
+	 * @param {string} id - torrent hash
+	 * @param {WebUITorrent} torrent
+	 */
 	getLabels : function(id, torrent)
 	{
 		if(!$type(this.labels[id]))
@@ -1938,6 +1991,10 @@ var theWebUI =
 		return(lbl);
 	},
 
+	/**
+	 *
+	 * @param {string} lbl - label
+	 */
 	setLabel: function(lbl) 
 	{
 		var req = '';
@@ -2162,7 +2219,7 @@ var theWebUI =
 			$("#pe").text(d.peers_actual + " " + theUILang.of + " " + d.peers_all + " " + theUILang.connected);
 			$("#et").text(theConverter.time(Math.floor((new Date().getTime()-theWebUI.deltaTime)/1000-iv(d.state_changed)),true));
 			$("#wa").text(theConverter.bytes(d.skip_total,2));
-	        	$("#bf").text(d.base_path);
+	        	$("#bf").text(d.save_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
 			$("#tu").text(	$type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID.substring(0,40));
